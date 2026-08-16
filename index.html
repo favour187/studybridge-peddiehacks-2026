@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#10233f" />
+  <title>StudyBridge — Small steps. Real progress.</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="mark">SB</span><span>StudyBridge</span></a>
+    <div class="top-actions"><span id="streak">🔥 0 day streak</span><button id="themeBtn" class="icon-btn" aria-label="Toggle theme">◐</button></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div><p class="eyebrow">YOUR STUDENT SUPPORT SPACE</p><h1>School feels heavy.<br><em>Let's make today lighter.</em></h1><p class="sub">A private, low-data toolkit that turns overwhelm into one achievable next step.</p></div>
+      <div class="pulse-card">
+        <p>How are you feeling right now?</p>
+        <div class="moods" role="group" aria-label="Mood check-in">
+          <button data-mood="Struggling">😣<span>Struggling</span></button><button data-mood="Low">😕<span>Low</span></button><button data-mood="Okay">😐<span>Okay</span></button><button data-mood="Good">🙂<span>Good</span></button><button data-mood="Great">😄<span>Great</span></button>
+        </div>
+        <small id="moodMessage">Your check-in stays on this device.</small>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card planner">
+        <div class="card-head"><div><span class="kicker">01 · FOCUS</span><h2>Make a tiny plan</h2></div><span class="badge">2-minute setup</span></div>
+        <form id="taskForm"><input id="taskInput" maxlength="80" placeholder="What feels most important?" required /><select id="taskSize" aria-label="Task length"><option value="5">5 min</option><option value="15" selected>15 min</option><option value="25">25 min</option></select><button>Add step</button></form>
+        <ul id="taskList" class="tasks"></ul>
+        <p id="emptyTasks" class="empty">No pressure. Add just one small step.</p>
+      </article>
+
+      <article class="card timer-card">
+        <span class="kicker">02 · RESET</span><h2>Focus without pressure</h2>
+        <div class="timer" id="timer">15:00</div>
+        <div class="timer-actions"><button id="startTimer" class="primary">Start focus</button><button id="resetTimer">Reset</button></div>
+        <div class="breath"><span></span><p>Breathe with the circle</p></div>
+      </article>
+
+      <article class="card resources">
+        <span class="kicker">03 · SUPPORT</span><h2>Choose what you need</h2>
+        <div class="resource-grid">
+          <button data-tip="Break the assignment into: understand, collect, create, review. Start with ‘understand’ for five minutes."><b>📚</b><span><strong>Assignment help</strong><small>Turn a big task into steps</small></span></button>
+          <button data-tip="Try 4–4 breathing: inhale for 4, hold for 4, exhale for 4. Repeat four times."><b>🌿</b><span><strong>Calm down</strong><small>A sixty-second reset</small></span></button>
+          <button data-tip="Send this: ‘Hi, I’m stuck on ___. Could you explain the first step or point me to an example?’"><b>🤝</b><span><strong>Ask for help</strong><small>Use a ready-made message</small></span></button>
+          <button data-tip="Write the first imperfect sentence. Momentum matters more than perfection."><b>⚡</b><span><strong>Get unstuck</strong><small>A quick momentum prompt</small></span></button>
+        </div>
+        <div id="tipBox" class="tip-box">Pick a support card for a practical next step.</div>
+      </article>
+
+      <article class="card impact">
+        <span class="kicker">WHY IT MATTERS</span><h2>Designed for real access</h2>
+        <ul><li><b>Private by default</b><span>No account and no personal data upload.</span></li><li><b>Low-data</b><span>Works as a single lightweight web app.</span></li><li><b>Inclusive</b><span>Keyboard-friendly, responsive and clear.</span></li></ul>
+      </article>
+    </section>
+
+    <section class="safety"><div><b>Need more than a productivity tool?</b><p>StudyBridge is not emergency care. If you feel unsafe, contact a trusted adult, local emergency service, or crisis support service now.</p></div><button id="helpPlan">Make a help plan</button></section>
+  </main>
+
+  <dialog id="helpDialog"><button class="close" aria-label="Close">×</button><h2>Your three-step help plan</h2><ol><li>Move near a safe, trusted person.</li><li>Say: “I am not feeling safe and I need you to stay with me.”</li><li>Contact your local emergency or crisis support service.</li></ol><p>Save the name of one trusted adult:</p><input id="trustedPerson" placeholder="Name or relationship"/><button id="savePerson" class="primary">Save on this device</button></dialog>
+
+  <footer>Built for PeddieHacks 2026 · StudyBridge stores progress locally on your device.</footer>
+  <script src="app.js"></script>
+</body>
+</html>
