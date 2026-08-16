@@ -1,0 +1,1 @@
+{"name":"lighthouse-school-support","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node server.mjs","check":"node --check app.js && node --check server.mjs && node --check netlify/functions/lighthouse-ai.mjs"},"engines":{"node":">=20"}}

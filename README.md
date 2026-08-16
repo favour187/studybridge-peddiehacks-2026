@@ -69,19 +69,21 @@ This is prototype authentication only. Production would use encrypted school-man
 
 The fictional Amina scenario demonstrates how a transport barrier causes missed Mathematics learning and how the school closes both gaps.
 
-## Real Groq AI deployment
+## Real Groq AI deployment on Render
 
-**Never put `GROQ_API_KEY` in `app.js`, HTML, a GitHub commit, or any `VITE_`/`NEXT_PUBLIC_` variable.** Browser visitors can read those values.
+**Never put `GROQ_API_KEY` in `app.js`, HTML, or a GitHub commit.** Browser visitors can read frontend values.
 
-This repository includes a Netlify Function at `netlify/functions/lighthouse-ai.mjs`. The browser calls `/api/ai`; the serverless function privately reads the API key and calls Groq.
+The repository includes `server.mjs` and `render.yaml`. The browser calls `/api/ai`; the Render server privately reads the key and calls Groq.
 
-1. Import this GitHub repository at https://app.netlify.com/start.
-2. Netlify detects `netlify.toml`; deploy with the default settings.
-3. In **Site configuration → Environment variables**, add `GROQ_API_KEY` with the real key.
-4. Optionally add `GROQ_MODEL`; the default is `llama-3.3-70b-versatile`.
-5. Redeploy, then use the Netlify URL for judging.
+1. Open https://dashboard.render.com/blueprints and choose **New Blueprint Instance**.
+2. Connect this GitHub repository. Render detects `render.yaml`.
+3. When prompted for `GROQ_API_KEY`, paste the real Groq key into Render—not GitHub.
+4. Create the service and wait for the deployment to finish.
+5. Open the generated `onrender.com` URL and test **Run AI morning scan**.
 
-GitHub Pages remains useful for the scripted interface demonstration but cannot securely hold a runtime Groq secret. GitHub Actions Secrets should not be injected into static frontend files because the built JavaScript is public.
+If creating a normal Web Service instead of a Blueprint, use build command `npm install`, start command `npm start`, and add `GROQ_API_KEY` under **Environment**. The server binds to Render's `PORT` automatically.
+
+GitHub Pages remains useful for the scripted interface demonstration but cannot securely hold a runtime Groq secret. A Netlify function is retained as an alternative deployment option.
 
 ## Technology
 
