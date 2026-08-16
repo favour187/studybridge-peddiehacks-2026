@@ -55,6 +55,11 @@ It asks not only “Who was absent?” but “Why, what learning was lost, who o
 - School barrier patterns by route
 - Seven-day outcome measurement
 - Audit endpoint for accountability
+- Live cross-role inboxes refreshed every seven seconds
+- Student signals reach authorised school staff
+- Support plans and recovery lessons reach the student
+- Parent replies reach the administrator activity feed
+- Assigned interventions reach the teacher inbox
 
 ### Responsible AI
 - AI recommends; humans decide.
