@@ -1,68 +1,38 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#10233f" />
-  <title>StudyBridge — Small steps. Real progress.</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <header class="topbar">
-    <a class="brand" href="#"><span class="mark">SB</span><span>StudyBridge</span></a>
-    <div class="top-actions"><span id="streak">🔥 0 day streak</span><button id="themeBtn" class="icon-btn" aria-label="Toggle theme">◐</button></div>
-  </header>
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#071d2d"><title>Lighthouse — No student disappears quietly</title><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"></head><body>
+<section id="loginScreen" class="login-screen">
+ <div class="login-brand"><span class="beacon">L</span><div><b>Lighthouse</b><small>SECURE SCHOOL SUPPORT</small></div></div>
+ <div class="login-wrap">
+  <div class="login-copy"><p class="eyebrow">PEDDIEHACKS JUDGE DEMO</p><h1>One school.<br><em>Four human perspectives.</em></h1><p>Experience how one early signal moves securely from a student’s voice to coordinated support—without exposing sensitive information to everyone.</p><div class="privacy-note">🔒 Role-based access · Private safeguarding data · Human-approved AI</div></div>
+  <div class="login-card">
+   <div id="loginStep1"><p class="eyebrow">CHOOSE A DEMO VIEW</p><h2>Who are you signing in as?</h2><div class="demo-roles">
+    <button data-login-role="admin"><i>🏫</i><span><b>Administrator</b><small>Risk map and interventions</small></span></button>
+    <button data-login-role="teacher"><i>🧑🏽‍🏫</i><span><b>Teacher</b><small>Attendance and learning recovery</small></span></button>
+    <button data-login-role="student"><i>🎒</i><span><b>Student</b><small>Private check-in and support</small></span></button>
+    <button data-login-role="parent"><i>🏠</i><span><b>Parent</b><small>Clear updates and response</small></span></button>
+   </div><button id="judgeTour" class="primary full">✦ Start guided judge demo</button></div>
+   <form id="loginForm" class="login-form"><button type="button" id="backLogin" class="back">← Change role</button><p class="eyebrow" id="loginRoleLabel">SECURE SIGN IN</p><h2 id="loginHeading">Administrator access</h2><label>School ID<input id="schoolId" autocomplete="username" required></label><label>Demo PIN<input id="accessPin" type="password" inputmode="numeric" autocomplete="current-password" required></label><label id="securityLabel">Security check: What guides every Lighthouse decision?<input id="securityAnswer" placeholder="Hint: people" required></label><p class="demo-credential" id="demoCredential"></p><button class="primary full">Unlock demo</button><p id="loginError" class="login-error"></p></form>
+  </div>
+ </div>
+ <footer>Prototype authentication for demonstration. Production deployment would use encrypted, school-managed identity and multi-factor authentication.</footer>
+</section>
+<header class="topbar"><a class="brand" href="#"><span class="beacon">L</span><span>Lighthouse<small>EARLY SUPPORT SYSTEM</small></span></a><nav id="roleNav"><button data-role="admin" class="active">Admin</button><button data-role="teacher">Teacher</button><button data-role="student">Student</button><button data-role="parent">Parent</button></nav><div class="status"><i></i> School online</div><button id="logoutBtn" class="logout">↪ Sign out</button></header>
+<main>
+<section id="admin" class="view active">
+ <div class="page-head"><div><p class="eyebrow">MONDAY · 17 AUGUST</p><h1>Good morning, Principal.</h1><p>Here is what needs human attention—not just another report.</p></div><button class="primary" id="runAI">✦ Run AI morning scan</button></div>
+ <div class="metrics"><article><span>Students protected</span><b>482</b><small class="up">↑ 12 this term</small></article><article><span>Needs a conversation</span><b>7</b><small>3 new signals</small></article><article><span>Interventions resolved</span><b>84%</b><small class="up">↑ 9% this month</small></article><article><span>Learning time recovered</span><b>126h</b><small>Across 11 classes</small></article></div>
+ <div class="admin-grid">
+  <article class="panel cases"><div class="panel-head"><div><p class="eyebrow">EARLY SIGNALS</p><h2>Who might be slipping away?</h2></div><span class="ai-chip">✦ Explainable AI</span></div><div id="caseList"></div></article>
+  <aside class="panel ai-brief"><p class="eyebrow">LIGHTHOUSE COPILOT</p><div class="orb">✦</div><h2 id="briefTitle">Amina needs a bridge, not a warning.</h2><p id="briefText">Her attendance changed before her grades did. Two late arrivals, one transport check-in and a missed mathematics concept suggest an access problem—not lack of effort.</p><div id="evidence" class="evidence"><span>Attendance change</span><span>Student voice</span><span>Learning gap</span></div><button id="draftPlan" class="primary full">Draft a human support plan</button><small>AI recommends. A person decides.</small></aside>
+  <article class="panel interventions"><div class="panel-head"><div><p class="eyebrow">ACTION, NOT LABELS</p><h2>Intervention pathway</h2></div><button class="ghost">View all</button></div><div class="path"><div class="path-item done"><i>✓</i><span><b>Signal noticed</b><small>Amina · transport and maths</small></span><em>08:10</em></div><div class="path-item done"><i>✓</i><span><b>Student heard privately</b><small>“Transport has become difficult.”</small></span><em>08:24</em></div><div class="path-item current"><i>3</i><span><b>Support owner assigned</b><small>Mrs Okafor · Guidance</small></span><button id="completeStep">Mark contacted</button></div><div class="path-item"><i>4</i><span><b>Learning recovered</b><small>Maths capsule awaiting completion</small></span></div></div></article>
+  <article class="panel pattern"><p class="eyebrow">SYSTEMIC PATTERN</p><h2>This may not be one child’s problem.</h2><div class="alert"><b>🚌 Transport signals rose 38%</b><p>Five students from the Gwagwalada route reported lateness this week. Consider contacting the route provider before issuing warnings.</p></div><button class="ghost full">Open school-wide action</button></article>
+ </div>
+</section>
 
-  <main>
-    <section class="hero">
-      <div><p class="eyebrow">YOUR STUDENT SUPPORT SPACE</p><h1>School feels heavy.<br><em>Let's make today lighter.</em></h1><p class="sub">A private, low-data toolkit that turns overwhelm into one achievable next step.</p></div>
-      <div class="pulse-card">
-        <p>How are you feeling right now?</p>
-        <div class="moods" role="group" aria-label="Mood check-in">
-          <button data-mood="Struggling">😣<span>Struggling</span></button><button data-mood="Low">😕<span>Low</span></button><button data-mood="Okay">😐<span>Okay</span></button><button data-mood="Good">🙂<span>Good</span></button><button data-mood="Great">😄<span>Great</span></button>
-        </div>
-        <small id="moodMessage">Your check-in stays on this device.</small>
-      </div>
-    </section>
+<section id="teacher" class="view"><div class="page-head"><div><p class="eyebrow">TEACHER WORKSPACE</p><h1>SS2 Mathematics</h1><p>See who is present, who is learning, and what must be recovered.</p></div><button class="primary" id="markAll">Mark remaining present</button></div><div class="teacher-grid"><article class="panel"><div class="panel-head"><div><p class="eyebrow">TODAY’S REGISTER</p><h2>Attendance with context</h2></div><b>18 / 21</b></div><div id="roster"></div></article><article class="panel"><p class="eyebrow">CLASS PULSE</p><h2>Did the lesson land?</h2><div class="pulse-bars"><div><span>Understood</span><i><b style="width:67%"></b></i><em>67%</em></div><div><span>Need example</span><i><b style="width:24%"></b></i><em>24%</em></div><div><span>Lost</span><i><b style="width:9%"></b></i><em>9%</em></div></div><div class="ai-note">✦ <span><b>AI teaching insight</b>Most confusion appeared after simultaneous equations. Use one visual worked example before independent practice.</span></div><button id="makeCapsule" class="primary full">✦ Generate catch-up capsule</button></article></div><article class="panel capsule" id="capsule"><div><p class="eyebrow">AI LESSON RECOVERY</p><h2>Simultaneous equations in 8 minutes</h2><p>A low-data recovery path generated from today’s lesson objective. Teacher approval required before students receive it.</p></div><ol><li><b>See it</b><span>Two equations are two clues pointing to the same answer.</span></li><li><b>Try it</b><span>Solve: x + y = 7 and x − y = 1.</span></li><li><b>Prove it</b><span>Explain why your values satisfy both equations.</span></li></ol><button id="approveCapsule" class="primary">Approve & send to absent students</button></article></section>
 
-    <section class="grid">
-      <article class="card planner">
-        <div class="card-head"><div><span class="kicker">01 · FOCUS</span><h2>Make a tiny plan</h2></div><span class="badge">2-minute setup</span></div>
-        <form id="taskForm"><input id="taskInput" maxlength="80" placeholder="What feels most important?" required /><select id="taskSize" aria-label="Task length"><option value="5">5 min</option><option value="15" selected>15 min</option><option value="25">25 min</option></select><button>Add step</button></form>
-        <ul id="taskList" class="tasks"></ul>
-        <p id="emptyTasks" class="empty">No pressure. Add just one small step.</p>
-      </article>
+<section id="student" class="view student-view"><div class="student-shell"><p class="eyebrow">PRIVATE WEEKLY CHECK-IN</p><h1>What is making school harder this week?</h1><p>Your answer helps the right adult support you. It is not used to punish you or calculate your grade.</p><div class="reasons"><button data-reason="learning">📚<span>I don’t understand a subject</span></button><button data-reason="transport">🚌<span>Getting to school is difficult</span></button><button data-reason="materials">🎒<span>I need fees or materials support</span></button><button data-reason="health">🌿<span>Health or wellbeing</span></button><button data-reason="safety">🛡️<span>I don’t feel safe</span></button><button data-reason="talk">💬<span>I need to speak privately</span></button></div><div id="studentNext" class="student-next"><label>Tell us only what you are comfortable sharing<textarea id="studentNote" placeholder="Optional…"></textarea></label><label class="check"><input type="checkbox" id="urgent"> I need someone to check on me today</label><button id="sendSignal" class="primary">Send my private signal</button></div><div id="studentThanks" class="thanks"><b>✓ You have been heard.</b><p>A trusted staff member will check in privately. You can keep learning while support is arranged.</p><button class="ghost" id="openRecovery">Open my missed-lesson capsule</button></div></div></section>
 
-      <article class="card timer-card">
-        <span class="kicker">02 · RESET</span><h2>Focus without pressure</h2>
-        <div class="timer" id="timer">15:00</div>
-        <div class="timer-actions"><button id="startTimer" class="primary">Start focus</button><button id="resetTimer">Reset</button></div>
-        <div class="breath"><span></span><p>Breathe with the circle</p></div>
-      </article>
-
-      <article class="card resources">
-        <span class="kicker">03 · SUPPORT</span><h2>Choose what you need</h2>
-        <div class="resource-grid">
-          <button data-tip="Break the assignment into: understand, collect, create, review. Start with ‘understand’ for five minutes."><b>📚</b><span><strong>Assignment help</strong><small>Turn a big task into steps</small></span></button>
-          <button data-tip="Try 4–4 breathing: inhale for 4, hold for 4, exhale for 4. Repeat four times."><b>🌿</b><span><strong>Calm down</strong><small>A sixty-second reset</small></span></button>
-          <button data-tip="Send this: ‘Hi, I’m stuck on ___. Could you explain the first step or point me to an example?’"><b>🤝</b><span><strong>Ask for help</strong><small>Use a ready-made message</small></span></button>
-          <button data-tip="Write the first imperfect sentence. Momentum matters more than perfection."><b>⚡</b><span><strong>Get unstuck</strong><small>A quick momentum prompt</small></span></button>
-        </div>
-        <div id="tipBox" class="tip-box">Pick a support card for a practical next step.</div>
-      </article>
-
-      <article class="card impact">
-        <span class="kicker">WHY IT MATTERS</span><h2>Designed for real access</h2>
-        <ul><li><b>Private by default</b><span>No account and no personal data upload.</span></li><li><b>Low-data</b><span>Works as a single lightweight web app.</span></li><li><b>Inclusive</b><span>Keyboard-friendly, responsive and clear.</span></li></ul>
-      </article>
-    </section>
-
-    <section class="safety"><div><b>Need more than a productivity tool?</b><p>StudyBridge is not emergency care. If you feel unsafe, contact a trusted adult, local emergency service, or crisis support service now.</p></div><button id="helpPlan">Make a help plan</button></section>
-  </main>
-
-  <dialog id="helpDialog"><button class="close" aria-label="Close">×</button><h2>Your three-step help plan</h2><ol><li>Move near a safe, trusted person.</li><li>Say: “I am not feeling safe and I need you to stay with me.”</li><li>Contact your local emergency or crisis support service.</li></ol><p>Save the name of one trusted adult:</p><input id="trustedPerson" placeholder="Name or relationship"/><button id="savePerson" class="primary">Save on this device</button></dialog>
-
-  <footer>Built for PeddieHacks 2026 · StudyBridge stores progress locally on your device.</footer>
-  <script src="app.js"></script>
-</body>
-</html>
+<section id="parent" class="view"><div class="page-head"><div><p class="eyebrow">FAMILY BRIDGE</p><h1>A clear update, with a way to help.</h1><p>No complicated school portal. Just the situation and the next useful action.</p></div><select id="language"><option value="english">English</option><option value="pidgin">Nigerian Pidgin</option><option value="hausa">Hausa</option></select></div><div class="parent-grid"><article class="phone panel"><div class="message"><span>Lighthouse · 9:05 AM</span><p id="parentMessage">Hello Mrs Yusuf. Amina has missed two Mathematics lessons and told the school that transport has become difficult. She is not in trouble. Mrs Okafor would like to discuss support and has sent an 8-minute catch-up lesson.</p></div><div class="parent-actions"><button id="canCall">I can receive a call</button><button id="needSupport">I need school support</button><button>She will attend tomorrow</button></div></article><article class="panel"><p class="eyebrow">SHARED PLAN</p><h2>Everyone can see the next step</h2><ul class="shared"><li class="done">School listens to Amina <b>Done</b></li><li>Parent and counsellor speak <b>Today</b></li><li>Transport solution agreed <b>Pending</b></li><li>Amina completes catch-up <b>8 min</b></li><li>Check progress after 7 days <b>Scheduled</b></li></ul><div class="ai-note">✦ <span><b>Communication safeguard</b>This message avoids blame, uses plain language and gives the parent a direct way to respond.</span></div></article></div></section>
+</main>
+<dialog id="planDialog"><button class="close">×</button><p class="eyebrow">AI-DRAFTED · HUMAN-APPROVED</p><h2>Support plan for Amina Yusuf</h2><div class="plan-section"><b>Likely barrier</b><p>Transport access, with a resulting Mathematics learning gap.</p></div><div class="plan-section"><b>Recommended actions</b><label><input type="checkbox" checked> Guidance counsellor contacts parent today</label><label><input type="checkbox" checked> Explore temporary transport support</label><label><input type="checkbox" checked> Send teacher-approved 8-minute lesson capsule</label><label><input type="checkbox"> Refer to disciplinary team</label></div><div class="warning">Disciplinary referral is not recommended: available evidence points to an access barrier, not misconduct.</div><button class="primary full" id="assignPlan">Approve plan & assign owner</button></dialog>
+<div id="toast"></div><script src="app.js"></script></body></html>

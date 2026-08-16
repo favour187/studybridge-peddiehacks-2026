@@ -1,61 +1,91 @@
-# StudyBridge
+# Lighthouse
 
-**Small steps. Real progress.**
+## No student should disappear quietly.
 
-StudyBridge is a private, low-data student wellbeing and focus web app. It helps overwhelmed students check in, turn a large task into achievable steps, focus for fifteen minutes, and find a safe path to human support.
+Lighthouse is an AI-assisted early-support system for schools. It notices the first signs of disengagement, listens for the reason behind them, and coordinates a human intervention before a student fails or drops out.
 
-## PeddieHacks track and theme
+**Hackathon prototype:** https://favour187.github.io/studybridge-peddiehacks-2026/
 
-- **Proposed track:** Social Good / Education
-- **Theme interpretation:** Improving student wellbeing and access to support
+## The problem
 
-> Update the track wording to exactly match the theme announced in the official PeddieHacks Discord before submitting.
+Most school management systems record attendance, grades and fees but react only after the damage is visible. Dropping out is usually a process: irregular attendance, lost learning, reduced confidence, weak family communication and unresolved access barriers accumulate over time.
 
-## Problem
+A red attendance number cannot explain whether a student is facing transport costs, illness, safety concerns, a learning gap or a problem at home. Schools need an action system—not another database.
 
-When students feel overwhelmed, most productivity tools add more complexity. Support can also be inaccessible because it needs an account, fast internet, or the confidence to ask for help.
+## The solution
 
-## Solution
+Lighthouse connects four people around one support pathway:
 
-StudyBridge meets students where they are. It offers:
+1. **Students** privately explain what is making school difficult.
+2. **Teachers** record attendance, mastery and lessons that require recovery.
+3. **Parents** receive plain-language, actionable updates and can respond.
+4. **Administrators** assign, track and verify interventions.
 
-- A private mood check-in stored only in the browser
-- A tiny-step planner that reduces intimidating tasks
-- A 15-minute focus timer and breathing cue
-- Contextual scripts for asking for help and getting unstuck
-- A three-step safety plan that encourages human support
-- Responsive, keyboard-friendly and low-data design
+Every case moves through:
 
-## Built with
+> Signal → Conversation → Action → Learning recovery → Follow-up → Resolved
 
-HTML, CSS and vanilla JavaScript. No framework, account, server or external API is required.
+## AI features
+
+### Explainable early-warning engine
+Combines changes in attendance, assignment completion, mastery, student check-ins and unrecovered learning. It shows the evidence behind each signal rather than producing a mysterious score.
+
+### Intervention Copilot
+Produces a concise case brief and drafts supportive next steps. It distinguishes likely access barriers from misconduct. A trained person must approve every action.
+
+### Lesson Recovery AI
+Turns a teacher-approved lesson objective into a low-data micro-lesson: explanation, worked task and proof-of-understanding question.
+
+### Pattern detection
+Finds shared barriers across students—for example, transport reports concentrated on one route—so administrators can solve a system problem instead of blaming individuals.
+
+### Inclusive family communication
+Rewrites school messages in plain, non-blaming language and supports translation. The prototype demonstrates English, Nigerian Pidgin and Hausa.
+
+## Responsible AI
+
+- AI recommends; humans decide.
+- No automatic punishment, suspension or grading.
+- Attendance alone never determines risk.
+- Sensitive safety details are restricted to safeguarding staff.
+- Students are told why information is collected.
+- Support outcomes are tracked to detect ineffective or biased interventions.
+- The browser prototype uses transparent rules and scripted examples; a production model would require consented, secured school data and formal bias evaluation.
+
+## Judge demo and role security
+
+The prototype opens with a role-based access gateway. Judges can use **Start guided judge demo** or choose any role. Demo IDs, PINs and the security answer are prefilled so access is fast while the product still demonstrates separation between administrator, teacher, student and parent information.
+
+The security question is: **What guides every Lighthouse decision?** The answer is **people**.
+
+This is prototype authentication only. Production would use encrypted school-managed identity, least-privilege permissions, multi-factor authentication, audit logs and separate safeguarding access.
+
+## Prototype walkthrough
+
+- **Admin:** inspect early signals, open an AI case brief and approve a support plan.
+- **Teacher:** mark attendance, inspect learning pulse and generate a catch-up capsule.
+- **Student:** submit a private barrier check-in and request same-day support.
+- **Parent:** translate the family message and respond with one tap.
+
+The fictional Amina scenario demonstrates how a transport barrier causes missed Mathematics learning and how the school closes both gaps.
+
+## Technology
+
+HTML, CSS, vanilla JavaScript, localStorage and a service worker. The prototype is responsive, installable and low-data. It has no external library dependency.
 
 ## Run locally
-
-Open `index.html` directly, or run:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Then visit `http://localhost:8000`.
+Open http://localhost:8000.
 
-## Privacy and safety
+## Production roadmap
 
-All user-created information is stored with browser `localStorage`; nothing is uploaded. StudyBridge is not medical advice or emergency care. Its safety language directs users to trusted adults and local services rather than attempting diagnosis.
-
-## Future work
-
-- Installable Progressive Web App with full offline caching
-- Optional school-curated local support directory
-- Anonymous aggregate insights controlled by schools and students
-- More languages and dyslexia-friendly font controls
-
-## Submission checklist
-
-- [ ] Replace proposed track wording with the official track name
-- [ ] Deploy using GitHub Pages, Netlify or Render
-- [ ] Add public repository URL to Devpost
-- [ ] Record a 1–2 minute demo
-- [ ] Export or present `slides.html`
-- [ ] Credit all team members
+- Secure role-based backend and audit logs
+- SMS/USSD check-ins for families without smartphones
+- Consent management and data-retention controls
+- Integration with existing attendance and assessment systems
+- Locally evaluated language models for case summaries and lesson recovery
+- Outcome dashboard measuring attendance recovery, learning recovery and intervention fairness
