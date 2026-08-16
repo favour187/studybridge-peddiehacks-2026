@@ -2,115 +2,170 @@
 
 ## No student should disappear quietly.
 
-Lighthouse is an AI-assisted early-support system for schools. It notices the first signs of disengagement, listens for the reason behind them, and coordinates a human intervention before a student fails or drops out.
+Lighthouse is a full-stack, AI-assisted early-support system for schools. It notices the first signs of disengagement, listens for the reason, coordinates a human intervention, recovers missed learning, and measures whether the help worked.
 
-**Hackathon prototype:** https://favour187.github.io/studybridge-peddiehacks-2026/
+## Why it is different
 
-## The problem
+Most school systems store fees, grades and attendance. Lighthouse closes the support loop:
 
-Most school management systems record attendance, grades and fees but react only after the damage is visible. Dropping out is usually a process: irregular attendance, lost learning, reduced confidence, weak family communication and unresolved access barriers accumulate over time.
+> Signal → Conversation → Assigned action → Family response → Learning recovery → Follow-up → Measured outcome
 
-A red attendance number cannot explain whether a student is facing transport costs, illness, safety concerns, a learning gap or a problem at home. Schools need an action system—not another database.
+It asks not only “Who was absent?” but “Why, what learning was lost, who owns the response, and did the intervention work?”
 
-## The solution
+## Implemented features
 
-Lighthouse connects four people around one support pathway:
+### Real full-stack platform
+- PostgreSQL persistence with automatic schema initialization
+- Secure hashed demo PINs and signed eight-hour JWT sessions
+- Role permissions for administrators, teachers, students, parents and safeguarding staff
+- Confidential-signal filtering by role
+- Login rate limiting and security headers
+- Immutable-style audit events for important actions
+- Temporary in-memory demo fallback when no database is configured
 
-1. **Students** privately explain what is making school difficult.
-2. **Teachers** record attendance, mastery and lessons that require recovery.
-3. **Parents** receive plain-language, actionable updates and can respond.
-4. **Administrators** assign, track and verify interventions.
+### Student
+- Private barrier check-in
+- Same-day support flag
+- Offline action queue and reconnection sync
+- Voice check-in transcription through Groq Whisper
+- AI-generated safe next step and human routing
+- Private free-text note excluded from the language-model prompt
 
-Every case moves through:
+### Teacher
+- Contextual attendance persisted to the database
+- Rotating five-minute attendance QR
+- Anonymous class-understanding pulse
+- Live Groq teaching adjustment and quick check
+- AI-generated low-data catch-up capsule
+- Teacher approval and persistent assignment of recovery work
 
-> Signal → Conversation → Action → Learning recovery → Follow-up → Resolved
+### Parent
+- Plain, non-blaming updates
+- English, Nigerian Pidgin and Hausa generation
+- Persisted parent responses
+- Groq-generated shared next step with clear school ownership
+- Optional Termii SMS and WhatsApp Cloud API delivery
 
-## AI features
+### Administrator and safeguarding
+- Live support-signal dashboard
+- Restricted safeguarding visibility
+- Explainable Groq case briefs
+- Intervention Copilot with human approval
+- Persisted owner, actions and follow-up date
+- School barrier patterns by route
+- Seven-day outcome measurement
+- Audit endpoint for accountability
 
-### Explainable early-warning engine
-Combines changes in attendance, assignment completion, mastery, student check-ins and unrecovered learning. It shows the evidence behind each signal rather than producing a mysterious score.
-
-### Intervention Copilot
-Produces a concise case brief and drafts supportive next steps. It distinguishes likely access barriers from misconduct. A trained person must approve every action.
-
-### Lesson Recovery AI
-Turns a teacher-approved lesson objective into a low-data micro-lesson: explanation, worked task and proof-of-understanding question.
-
-### Pattern detection
-Finds shared barriers across students—for example, transport reports concentrated on one route—so administrators can solve a system problem instead of blaming individuals.
-
-### Live teaching insight
-Combines aggregate attendance and anonymous class-understanding signals to suggest an inclusive teaching adjustment and a quick check-for-understanding question.
-
-### Student support routing
-After a student selects a barrier category, Groq creates a safe immediate next step and recommends the appropriate human follow-up route. The private free-text note is not sent to Groq.
-
-### Inclusive family communication and planning
-Rewrites school messages in plain, non-blaming language, supports translation, and turns a parent's response into a shared school-owned next step.
-
-### Where AI is intentionally not used
-Authentication, attendance storage, safeguarding permissions, risk-score arithmetic, approvals and audit records remain deterministic. AI helps interpret and communicate; it cannot become the authority for identity, facts, punishment, grades or safety decisions.
-
-## Responsible AI
-
+### Responsible AI
 - AI recommends; humans decide.
-- No automatic punishment, suspension or grading.
-- Attendance alone never determines risk.
-- Sensitive safety details are restricted to safeguarding staff.
-- Students are told why information is collected.
-- Support outcomes are tracked to detect ineffective or biased interventions.
-- The browser prototype uses transparent rules and scripted examples; a production model would require consented, secured school data and formal bias evaluation.
+- No automatic punishment, suspension, grading or diagnosis.
+- Risk scores prompt conversations and are not treated as facts.
+- Authentication, permissions, attendance facts, approvals and audit records remain deterministic.
+- Safety details are restricted and private notes are not sent to Groq.
 
-## Judge demo and role security
+## Judge demo accounts
 
-The prototype opens with a role-based access gateway. Judges can use **Start guided judge demo** or choose any role. Demo IDs, PINs and the security answer are prefilled so access is fast while the product still demonstrates separation between administrator, teacher, student and parent information.
+| Role | School ID | PIN |
+|---|---|---|
+| Administrator | `LH-ADMIN` | `2026` |
+| Teacher | `LH-TEACHER` | `2468` |
+| Student | `LH-STUDENT` | `1357` |
+| Parent | `LH-PARENT` | `8642` |
+| Safeguarding | `LH-SAFE` | `9753` |
 
-The security question is: **What guides every Lighthouse decision?** The answer is **people**.
+Security-question answer: `people`.
 
-This is prototype authentication only. Production would use encrypted school-managed identity, least-privilege permissions, multi-factor authentication, audit logs and separate safeguarding access.
+The visible credentials and cross-role switcher exist only for judging. A real school deployment should disable demo switching, provision users administratively, and add MFA or single sign-on.
 
-## Prototype walkthrough
+## Deploy on Render
 
-- **Admin:** inspect early signals, open an AI case brief and approve a support plan.
-- **Teacher:** mark attendance, inspect learning pulse and generate a catch-up capsule.
-- **Student:** submit a private barrier check-in and request same-day support.
-- **Parent:** translate the family message and respond with one tap.
+1. Create a PostgreSQL database on Render, Supabase or Neon and copy its external connection string.
+2. Go to https://dashboard.render.com/blueprints and create a Blueprint from this repository.
+3. Add the required environment variables listed below.
+4. Deploy. `schema.sql` runs automatically and seeds fictional judge accounts.
+5. Open `/health` to confirm AI, database and notification configuration.
 
-The fictional Amina scenario demonstrates how a transport barrier causes missed Mathematics learning and how the school closes both gaps.
+If creating a normal Render Web Service instead, use:
 
-## Real Groq AI deployment on Render
-
-**Never put `GROQ_API_KEY` in `app.js`, HTML, or a GitHub commit.** Browser visitors can read frontend values.
-
-The repository includes `server.mjs` and `render.yaml`. The browser calls `/api/ai`; the Render server privately reads the key and calls Groq.
-
-1. Open https://dashboard.render.com/blueprints and choose **New Blueprint Instance**.
-2. Connect this GitHub repository. Render detects `render.yaml`.
-3. When prompted for `GROQ_API_KEY`, paste the real Groq key into Render—not GitHub.
-4. Create the service and wait for the deployment to finish.
-5. Open the generated `onrender.com` URL and test **Run AI morning scan**.
-
-If creating a normal Web Service instead of a Blueprint, use build command `npm install`, start command `npm start`, and add `GROQ_API_KEY` under **Environment**. The server binds to Render's `PORT` automatically.
-
-GitHub Pages remains useful for the scripted interface demonstration but cannot securely hold a runtime Groq secret. A Netlify function is retained as an alternative deployment option.
-
-## Technology
-
-HTML, CSS, vanilla JavaScript, localStorage, a service worker, a Netlify serverless function and the Groq Chat Completions API. The frontend has no external library dependency.
-
-## Run locally
-
-```bash
-python3 -m http.server 8000
+```text
+Build command: npm install
+Start command: npm start
+Health check: /health
 ```
 
-Open http://localhost:8000.
+## Environment variables
 
-## Production roadmap
+### Required for the full experience
 
-- Secure role-based backend and audit logs
-- SMS/USSD check-ins for families without smartphones
-- Consent management and data-retention controls
-- Integration with existing attendance and assessment systems
-- Locally evaluated language models for case summaries and lesson recovery
-- Outcome dashboard measuring attendance recovery, learning recovery and intervention fairness
+```text
+GROQ_API_KEY=your_private_groq_key
+DATABASE_URL=postgresql://user:password@host:5432/database
+JWT_SECRET=a_long_random_secret_at_least_32_characters
+```
+
+### Recommended
+
+```text
+GROQ_MODEL=llama-3.3-70b-versatile
+GROQ_WHISPER_MODEL=whisper-large-v3-turbo
+DATABASE_SSL=true
+NODE_ENV=production
+```
+
+### Optional Termii SMS
+
+```text
+TERMII_API_KEY=your_termii_key
+TERMII_SENDER_ID=Lighthouse
+TERMII_CHANNEL=generic
+TERMII_API_URL=https://v3.api.termii.com/api/sms/send
+```
+
+### Optional WhatsApp Cloud API
+
+```text
+WHATSAPP_TOKEN=your_meta_token
+WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id
+WHATSAPP_API_VERSION=v21.0
+```
+
+### Optional demo customization
+
+```text
+DEMO_ADMIN_PIN=2026
+DEMO_TEACHER_PIN=2468
+DEMO_STUDENT_PIN=1357
+DEMO_PARENT_PIN=8642
+DEMO_SAFEGUARD_PIN=9753
+DEMO_PARENT_PHONE=+234...
+```
+
+Never put these values in `app.js`, HTML, `.env.example`, or a GitHub commit. Add them under the Render service’s **Environment** section.
+
+## API overview
+
+- `POST /api/auth/login`
+- `GET /api/dashboard`
+- `GET/POST /api/signals`
+- `POST /api/attendance`
+- `GET /api/attendance/qr`
+- `POST /api/interventions`
+- `POST /api/recoveries`
+- `POST /api/family-responses`
+- `POST /api/outcomes`
+- `GET /api/audit`
+- `POST /api/transcribe`
+- `POST /api/notify`
+- `POST /api/ai`
+- `GET /health`
+
+## Local development
+
+```bash
+cp .env.example .env
+# Export the variables with your preferred environment loader.
+npm install
+npm start
+```
+
+The server listens on `PORT` or `10000`. Without `DATABASE_URL`, it uses temporary in-memory demonstration data.

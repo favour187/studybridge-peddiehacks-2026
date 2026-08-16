@@ -1,39 +1,19 @@
-import http from 'node:http';
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
-import { handler as aiHandler } from './netlify/functions/lighthouse-ai.mjs';
-
-const root = path.dirname(fileURLToPath(import.meta.url));
-const port = Number(process.env.PORT || 10000);
-const publicFiles = new Set(['/index.html','/style.css','/app.js','/manifest.json','/sw.js','/slides.html']);
-const mime = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json; charset=utf-8'};
-const securityHeaders = {
-  'X-Content-Type-Options':'nosniff',
-  'X-Frame-Options':'SAMEORIGIN',
-  'Referrer-Policy':'strict-origin-when-cross-origin',
-  'Permissions-Policy':'camera=(), microphone=(), geolocation=()',
-  'Content-Security-Policy':"default-src 'self'; connect-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:; manifest-src 'self'; base-uri 'self'; form-action 'self'"
-};
-
-function send(res,status,body,headers={}){res.writeHead(status,{...securityHeaders,...headers});res.end(body)}
-function readBody(req){return new Promise((resolve,reject)=>{let data='';req.on('data',chunk=>{data+=chunk;if(data.length>50_000){reject(new Error('Request too large'));req.destroy()}});req.on('end',()=>resolve(data));req.on('error',reject)})}
-
-const server=http.createServer(async(req,res)=>{
-  try{
-    const url=new URL(req.url,'http://localhost');
-    if(url.pathname==='/health')return send(res,200,JSON.stringify({ok:true}),{'Content-Type':'application/json'});
-    if(url.pathname==='/api/ai'){
-      if(req.method!=='POST')return send(res,405,JSON.stringify({error:'POST only'}),{'Content-Type':'application/json'});
-      const body=await readBody(req);
-      const result=await aiHandler({httpMethod:'POST',body});
-      return send(res,result.statusCode,result.body,result.headers);
-    }
-    const requested=url.pathname==='/'?'/index.html':url.pathname;
-    if(!publicFiles.has(requested))return send(res,404,'Not found',{'Content-Type':'text/plain; charset=utf-8'});
-    const file=await readFile(path.join(root,requested));
-    const cache=requested==='/sw.js'||requested==='/index.html'?'no-cache':'public, max-age=300';
-    return send(res,200,file,{'Content-Type':mime[path.extname(requested)]||'application/octet-stream','Cache-Control':cache});
-  }catch(error){console.error(error);return send(res,500,JSON.stringify({error:'Server error'}),{'Content-Type':'application/json'})}
-});
-server.listen(port,'0.0.0.0',()=>console.log(`Lighthouse running on 0.0.0.0:${port}`));
+import express from 'express';import multer from 'multer';import QRCode from 'qrcode';import path from 'node:path';import {fileURLToPath} from 'node:url';
+import {handler as aiHandler} from './netlify/functions/lighthouse-ai.mjs';import {initStore,findUserBySchoolId,createSignal,listSignals,saveAttendance,createIntervention,createRecovery,saveFamilyResponse,recordOutcome,dashboard,getAudit,audit,getStudent} from './lib/store.mjs';import {checkPin,issueToken,requireAuth,safeUser} from './lib/auth.mjs';import {sendFamilyMessage,sendWhatsApp} from './lib/notify.mjs';
+const app=express(),root=path.dirname(fileURLToPath(import.meta.url)),port=Number(process.env.PORT||10000);const upload=multer({storage:multer.memoryStorage(),limits:{fileSize:8*1024*1024,files:1}});const attempts=new Map();
+app.disable('x-powered-by');app.use((req,res,next)=>{res.set({'X-Content-Type-Options':'nosniff','X-Frame-Options':'SAMEORIGIN','Referrer-Policy':'strict-origin-when-cross-origin','Permissions-Policy':'camera=(self), microphone=(self), geolocation=()','Content-Security-Policy':"default-src 'self'; connect-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; manifest-src 'self'; base-uri 'self'; form-action 'self'"});next()});app.use(express.json({limit:'50kb'}));
+const publicFiles=['index.html','style.css','app.js','manifest.json','sw.js','slides.html'];for(const f of publicFiles)app.get(f==='index.html'?['/','/index.html']:`/${f}`,(req,res)=>res.sendFile(path.join(root,f),{headers:{'Cache-Control':['index.html','sw.js'].includes(f)?'no-cache':'public,max-age=300'}}));app.get('/health',(req,res)=>res.json({ok:true,ai:!!process.env.GROQ_API_KEY,database:!!process.env.DATABASE_URL,sms:!!process.env.TERMII_API_KEY,whatsapp:!!process.env.WHATSAPP_TOKEN}));
+app.post('/api/auth/login',async(req,res,next)=>{try{const ip=req.ip,key=`${ip}:${String(req.body.schoolId).toUpperCase()}`,recent=(attempts.get(key)||[]).filter(t=>Date.now()-t<15*60_000);if(recent.length>=10)return res.status(429).json({error:'Too many attempts. Try later.'});const user=await findUserBySchoolId(req.body.schoolId||'');const valid=user&&await checkPin(req.body.pin||'',user.pin_hash);const security=['people','human','humans'].includes(String(req.body.securityAnswer||'').trim().toLowerCase());if(!valid||!security){recent.push(Date.now());attempts.set(key,recent);return res.status(401).json({error:'Invalid sign-in details.'})}attempts.delete(key);await audit(user.id,'login','user',user.id,{role:user.role});res.json({token:issueToken(user),user:safeUser(user)})}catch(e){next(e)}});
+app.post('/api/ai',requireAuth(),async(req,res)=>{const result=await aiHandler({httpMethod:'POST',body:JSON.stringify(req.body)});res.status(result.statusCode).set(result.headers||{}).send(result.body)});
+app.get('/api/dashboard',requireAuth(),async(req,res,next)=>{try{res.json(await dashboard(req.user))}catch(e){next(e)}});app.get('/api/signals',requireAuth(),async(req,res,next)=>{try{res.json(await listSignals(req.user))}catch(e){next(e)}});
+app.post('/api/signals',requireAuth(['student']),async(req,res,next)=>{try{const allowed=['learning','transport','materials','health','safety','talk'];if(!allowed.includes(req.body.category))return res.status(400).json({error:'Choose a valid support category.'});const signal=await createSignal({studentId:req.user.linkedStudentId,category:req.body.category,note:String(req.body.note||'').slice(0,1500),urgent:!!req.body.urgent});await audit(req.user.sub,'create_signal','signal',signal.id,{category:signal.category,urgent:signal.urgent,visibility:signal.visibility});res.status(201).json({signal:{id:signal.id,category:signal.category,urgent:signal.urgent,status:signal.status,created_at:signal.created_at}})}catch(e){next(e)}});
+app.post('/api/attendance',requireAuth(['teacher','admin']),async(req,res,next)=>{try{if(!Array.isArray(req.body.records)||req.body.records.length>100)return res.status(400).json({error:'Invalid attendance records.'});const records=req.body.records.filter(x=>['Present','Late','Absent'].includes(x.state)).map(x=>({studentId:String(x.studentId),state:x.state}));const saved=await saveAttendance({records,className:String(req.body.className||'Unknown').slice(0,40),markedBy:req.user.sub});await audit(req.user.sub,'save_attendance','class',req.body.className,{count:saved.length});res.status(201).json({saved:saved.length})}catch(e){next(e)}});
+app.post('/api/interventions',requireAuth(['admin','safeguarding']),async(req,res,next)=>{try{const row=await createIntervention({studentId:req.body.studentId,signalId:req.body.signalId,title:String(req.body.title||'Support plan').slice(0,140),ownerId:req.body.ownerId||req.user.sub,actions:Array.isArray(req.body.actions)?req.body.actions.slice(0,10):[],followUpAt:req.body.followUpAt,createdBy:req.user.sub});await audit(req.user.sub,'create_intervention','intervention',row.id,{studentId:row.student_id});res.status(201).json(row)}catch(e){next(e)}});
+app.post('/api/recoveries',requireAuth(['teacher','admin']),async(req,res,next)=>{try{const row=await createRecovery({studentId:req.body.studentId||'stu_amina',subject:String(req.body.subject||'Mathematics'),topic:String(req.body.topic||''),content:req.body.content||{},createdBy:req.user.sub});await audit(req.user.sub,'assign_recovery','recovery',row.id,{studentId:row.student_id});res.status(201).json(row)}catch(e){next(e)}});
+app.post('/api/family-responses',requireAuth(['parent']),async(req,res,next)=>{try{const row=await saveFamilyResponse({studentId:req.user.linkedStudentId,response:String(req.body.response||'').slice(0,500),channel:'web'});await audit(req.user.sub,'family_response','student',req.user.linkedStudentId,{response:row.response});res.status(201).json(row)}catch(e){next(e)}});
+app.post('/api/outcomes',requireAuth(['admin','teacher','safeguarding']),async(req,res,next)=>{try{const row=await recordOutcome(req.body,req.user.sub);await audit(req.user.sub,'record_outcome','intervention',row.intervention_id,{attendanceImproved:row.attendance_improved,learningRecovered:row.learning_recovered});res.status(201).json(row)}catch(e){next(e)}});app.get('/api/audit',requireAuth(['admin','safeguarding']),async(req,res,next)=>{try{res.json(await getAudit(req.user))}catch(e){next(e)}});
+app.post('/api/transcribe',requireAuth(),upload.single('audio'),async(req,res,next)=>{try{if(!process.env.GROQ_API_KEY)return res.status(503).json({error:'GROQ_API_KEY is not configured.'});if(!req.file)return res.status(400).json({error:'Audio file required.'});const form=new FormData();form.append('file',new Blob([req.file.buffer],{type:req.file.mimetype}),req.file.originalname||'checkin.webm');form.append('model',process.env.GROQ_WHISPER_MODEL||'whisper-large-v3-turbo');form.append('response_format','verbose_json');const response=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{method:'POST',headers:{Authorization:`Bearer ${process.env.GROQ_API_KEY}`},body:form});const result=await response.json();if(!response.ok)throw new Error(result?.error?.message||'Transcription failed');await audit(req.user.sub,'transcribe_voice','user',req.user.sub,{language:result.language,duration:result.duration});res.json({text:result.text,language:result.language,duration:result.duration})}catch(e){next(e)}});
+app.get('/api/attendance/qr',requireAuth(['teacher','admin']),async(req,res,next)=>{try{const className=String(req.query.class||'SS2').slice(0,30),window=Math.floor(Date.now()/300000),payload=JSON.stringify({school:'Lighthouse',className,window,expires:new Date((window+1)*300000).toISOString()});res.type('png').send(await QRCode.toBuffer(payload,{width:320,margin:2,color:{dark:'#071d2d',light:'#ffffff'}}))}catch(e){next(e)}});
+app.post('/api/notify',requireAuth(['admin','safeguarding']),async(req,res,next)=>{try{const student=await getStudent(req.body.studentId||'stu_amina');const to=String(req.body.to||'').replace(/[^+\d]/g,'');if(!to)return res.status(400).json({error:'A destination phone number is required.'});const message=String(req.body.message||'').slice(0,1000);const result=req.body.channel==='whatsapp'?await sendWhatsApp({to,message}):await sendFamilyMessage({to,message});await audit(req.user.sub,'notify_family','student',student?.id,{channel:result.provider,sent:result.sent});res.json(result)}catch(e){next(e)}});
+app.use((err,req,res,next)=>{console.error(err);res.status(err.code==='LIMIT_FILE_SIZE'?413:500).json({error:process.env.NODE_ENV==='production'?'The request could not be completed.':err.message})});
+await initStore();app.listen(port,'0.0.0.0',()=>console.log(`Lighthouse v2 running on 0.0.0.0:${port}`));
