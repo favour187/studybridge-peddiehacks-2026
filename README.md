@@ -39,8 +39,17 @@ Turns a teacher-approved lesson objective into a low-data micro-lesson: explanat
 ### Pattern detection
 Finds shared barriers across students—for example, transport reports concentrated on one route—so administrators can solve a system problem instead of blaming individuals.
 
-### Inclusive family communication
-Rewrites school messages in plain, non-blaming language and supports translation. The prototype demonstrates English, Nigerian Pidgin and Hausa.
+### Live teaching insight
+Combines aggregate attendance and anonymous class-understanding signals to suggest an inclusive teaching adjustment and a quick check-for-understanding question.
+
+### Student support routing
+After a student selects a barrier category, Groq creates a safe immediate next step and recommends the appropriate human follow-up route. The private free-text note is not sent to Groq.
+
+### Inclusive family communication and planning
+Rewrites school messages in plain, non-blaming language, supports translation, and turns a parent's response into a shared school-owned next step.
+
+### Where AI is intentionally not used
+Authentication, attendance storage, safeguarding permissions, risk-score arithmetic, approvals and audit records remain deterministic. AI helps interpret and communicate; it cannot become the authority for identity, facts, punishment, grades or safety decisions.
 
 ## Responsible AI
 

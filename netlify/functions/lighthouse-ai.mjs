@@ -5,7 +5,10 @@ const schemas = {
   intervention_plan: '{"likely_barrier":"text","actions":["specific human action"],"avoid":"one harmful or unsupported action to avoid","follow_up_days":7}',
   lesson_capsule: '{"title":"topic in N minutes","intro":"simple explanation","steps":[{"label":"See it","text":"..."},{"label":"Try it","text":"..."},{"label":"Prove it","text":"..."}]}',
   parent_message: '{"message":"plain, supportive message in the requested language"}',
-  systemic_pattern: '{"headline":"short pattern title","summary":"what the pattern may mean and one school-level response"}'
+  systemic_pattern: '{"headline":"short pattern title","summary":"what the pattern may mean and one school-level response"}',
+  teacher_insight: '{"observation":"what the class signals suggest without overstating","action":"one teaching adjustment","quick_check":"one short check-for-understanding question"}',
+  student_support: '{"acknowledgement":"warm confirmation without making promises","immediate_next_step":"safe practical step","human_route":"which trained school role should privately follow up","priority":"routine|today|urgent"}',
+  family_next_step: '{"response":"warm reply to the parent","school_action":"specific action the school should own","parent_action":"optional realistic action for the parent","follow_up":"when the school should update the family"}'
 };
 
 const system = `You are Lighthouse Copilot, a responsible school support assistant. Help trained school staff act early when students face attendance, learning, transport, financial, health, family, or safety barriers.
