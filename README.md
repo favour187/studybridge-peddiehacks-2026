@@ -69,9 +69,23 @@ This is prototype authentication only. Production would use encrypted school-man
 
 The fictional Amina scenario demonstrates how a transport barrier causes missed Mathematics learning and how the school closes both gaps.
 
+## Real Groq AI deployment
+
+**Never put `GROQ_API_KEY` in `app.js`, HTML, a GitHub commit, or any `VITE_`/`NEXT_PUBLIC_` variable.** Browser visitors can read those values.
+
+This repository includes a Netlify Function at `netlify/functions/lighthouse-ai.mjs`. The browser calls `/api/ai`; the serverless function privately reads the API key and calls Groq.
+
+1. Import this GitHub repository at https://app.netlify.com/start.
+2. Netlify detects `netlify.toml`; deploy with the default settings.
+3. In **Site configuration → Environment variables**, add `GROQ_API_KEY` with the real key.
+4. Optionally add `GROQ_MODEL`; the default is `llama-3.3-70b-versatile`.
+5. Redeploy, then use the Netlify URL for judging.
+
+GitHub Pages remains useful for the scripted interface demonstration but cannot securely hold a runtime Groq secret. GitHub Actions Secrets should not be injected into static frontend files because the built JavaScript is public.
+
 ## Technology
 
-HTML, CSS, vanilla JavaScript, localStorage and a service worker. The prototype is responsive, installable and low-data. It has no external library dependency.
+HTML, CSS, vanilla JavaScript, localStorage, a service worker, a Netlify serverless function and the Groq Chat Completions API. The frontend has no external library dependency.
 
 ## Run locally
 
